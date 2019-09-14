@@ -1,26 +1,38 @@
 import React from 'react';
 import logo from './logo.svg';
+import axios from "axios";
 import './App.css';
+import { Container} from 'semantic-ui-react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import PlayerCard from "./components/PlayerCard";
+import Navbar from './components/navbar';
+
+class App extends React.Component {
+  constructor(){
+    super();
+    this.state={
+      people: []
+    };
+  }
+  componentDidMount(){
+    axios
+    .get(`http://localhost:5000/api/players`)
+    .then(people=>{
+      this.setState({people:people.data})})
+    .catch(err => console.log("noooo: ", err));
+  }  
+  render(){
+    return(
+      <div className="app">
+        <div className="header">
+          <Navbar />
+        </div>
+        <Container  className="cardcontainer">
+          <p className="pCard">{this.state.people.map(person=>(<PlayerCard person={person} personID={person.id}/>))}</p>
+        </Container>
+      </div>
+    );
+  }
+};
 
 export default App;
